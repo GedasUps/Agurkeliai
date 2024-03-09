@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Map"
+        android:icon = "@drawable/baseline_location_on_24"
+        android:id = "@+id/map"/>
+    <item android:title="Reviews"
+        android:icon = "@drawable/baseline_add_task_24"
+        android:id = "@+id/review"/>
+    <item android:title="Profile"
+        android:icon = "@drawable/baseline_account_circle_24"
+        android:id = "@+id/profile"/>
+</menu>
