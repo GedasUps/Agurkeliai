@@ -21,11 +21,13 @@
         android:id="@+id/edtxtName"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="21dp"
         android:ems="10"
         android:hint="Name"
         android:inputType="text"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toStartOf="@+id/imageView"
         app:layout_constraintHorizontal_bias="0.875"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,10 +37,12 @@
         android:id="@+id/edtxtNumber"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
         android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="Phone number"
         android:inputType="number"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="@+id/edtxtEmail"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/edtxtEmail"
@@ -48,25 +52,16 @@
         android:id="@+id/edtxtEmail"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
         android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="text"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="@+id/edtxtName"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/edtxtName"
-        app:layout_constraintTop_toBottomOf="@+id/edtxtName"
-        />
-
-    <Button
-        android:id="@+id/btnContacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="21dp"
-        android:text="Change contacts"
-        app:layout_constraintEnd_toEndOf="@+id/edtxtNumber"
-        app:layout_constraintStart_toStartOf="@+id/edtxtNumber"
-        app:layout_constraintTop_toBottomOf="@+id/edtxtNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/edtxtName" />
 
     <Button
         android:id="@+id/btnPhoto"
@@ -75,7 +70,9 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="5dp"
+        android:layout_marginBottom="15dp"
         android:text="Change picture"
+        app:layout_constraintBottom_toTopOf="@+id/lstHistory"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -84,12 +81,20 @@
         android:id="@+id/lstHistory"
         android:layout_width="409dp"
         android:layout_height="454dp"
-        android:layout_marginTop="24dp"
         android:layout_marginBottom="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnContacts"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnChnageContacts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Change contacts"
+        app:layout_constraintEnd_toEndOf="@+id/edtxtNumber"
+        app:layout_constraintHorizontal_bias="0.564"
+        app:layout_constraintStart_toStartOf="@+id/edtxtNumber"
+        app:layout_constraintTop_toBottomOf="@+id/edtxtNumber" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
