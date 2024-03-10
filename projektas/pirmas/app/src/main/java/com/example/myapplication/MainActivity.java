@@ -1,6 +1,9 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +39,37 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
     }
+    int count=0;
+    public void onBtnChangeClick(View view)
+    {
+        // gets button stuff
+        Button change = findViewById(R.id.btnChangeContacts);
 
+        // gets all edtxt elemts from the scene
+        EditText name=findViewById(R.id.edtxtName);
+        EditText email=findViewById(R.id.edtxtEmail);
+        EditText number=findViewById(R.id.edtxtNumber);
+        EditText history=findViewById(R.id.edtxtHistory);
+        // lets to change contacts
+
+        if(change.getText().toString().equals("Save")&&count>0)
+        {
+            name.setEnabled(false);
+            email.setEnabled(false);
+            number.setEnabled(false);
+            change.setText("Change contacts");
+            count--;
+        }
+        else
+        {
+            name.setEnabled(true);
+            email.setEnabled(true);
+            number.setEnabled(true);
+            change.setText("Save");
+            count++;
+        }
+
+    }
     private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

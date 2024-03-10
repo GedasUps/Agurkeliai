@@ -21,28 +21,34 @@
         android:id="@+id/edtxtName"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="21dp"
+              
+        android:layout_marginTop="28dp"
+              
         android:ems="10"
         android:hint="Name"
         android:inputType="text"
         android:minHeight="48dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.875"
+  
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.074"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:enabled="false"/>
 
     <EditText
         android:id="@+id/edtxtNumber"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="10dp"
+
+        android:layout_marginTop="16dp"
         android:ems="10"
+        android:enabled="false"
         android:hint="Phone number"
         android:inputType="number"
         android:minHeight="48dp"
+        android:text="+"
+
         app:layout_constraintEnd_toEndOf="@+id/edtxtEmail"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/edtxtEmail"
@@ -53,8 +59,11 @@
         android:layout_width="195dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="10dp"
+
+        android:layout_marginTop="16dp"
         android:ems="10"
+        android:enabled="false"
+
         android:hint="Email"
         android:inputType="text"
         android:minHeight="48dp"
@@ -67,35 +76,58 @@
         android:id="@+id/btnPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="15dp"
-        android:text="Change picture"
-        app:layout_constraintBottom_toTopOf="@+id/lstHistory"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-    <ListView
-        android:id="@+id/lstHistory"
-        android:layout_width="409dp"
-        android:layout_height="454dp"
-        android:layout_marginBottom="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="48dp"
+        android:text="Change picture"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.833"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        android:onClick="ChangePhoto"/>
 
     <Button
         android:id="@+id/btnChangeContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+
+        android:layout_marginTop="36dp"
+        android:onClick="onBtnChangeClick"
         android:text="Change contacts"
         app:layout_constraintEnd_toEndOf="@+id/edtxtNumber"
-        app:layout_constraintHorizontal_bias="0.564"
+        app:layout_constraintHorizontal_bias="0.538"
         app:layout_constraintStart_toStartOf="@+id/edtxtNumber"
-        app:layout_constraintTop_toBottomOf="@+id/edtxtNumber"
-       android:onClick="ChnageContact" />
+        app:layout_constraintTop_toBottomOf="@+id/edtxtNumber" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="151dp"
+        android:layout_height="162dp"
+        android:layout_marginTop="28dp"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintBottom_toTopOf="@+id/btnPhoto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.608"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <EditText
+        android:id="@+id/edtxtHistory"
+        android:layout_width="410dp"
+        android:layout_height="417dp"
+        android:backgroundTint="@color/material_dynamic_neutral70"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="history"
+        android:inputType="textMultiLine"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
