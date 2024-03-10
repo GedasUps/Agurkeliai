@@ -87,7 +87,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnChnageContacts"
+        android:id="@+id/btnChangeContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -95,6 +95,7 @@
         app:layout_constraintEnd_toEndOf="@+id/edtxtNumber"
         app:layout_constraintHorizontal_bias="0.564"
         app:layout_constraintStart_toStartOf="@+id/edtxtNumber"
-        app:layout_constraintTop_toBottomOf="@+id/edtxtNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/edtxtNumber"
+       android:onClick="ChnageContact" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
