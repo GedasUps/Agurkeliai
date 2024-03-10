@@ -63,20 +63,6 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
-    public void ChangeContact(View view)
-    {
-        // gets button stuff
-        Button change = getView().findViewById(R.id.btnChangeContacts);
-        // gets all edtxt elemts from the scene
-        EditText name=getView().findViewById(R.id.edtxtName);
-        EditText email=getView().findViewById(R.id.edtxtEmail);
-        EditText number=getView().findViewById(R.id.edtxtNumber);
-        EditText history=getView().findViewById(R.id.edtxtHistory);
-        // lets to change contacts
-        name.setEnabled(true);
-        email.setEnabled(true);
-        number.setEnabled(true);
-        change.setText("Save");
 
-    }
+
 }
