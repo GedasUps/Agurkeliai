@@ -1,10 +1,13 @@
 package com.example.myapplication;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,9 +46,24 @@ public class MainActivity extends AppCompatActivity {
     public void ChangePhoto(View view)
     {
         ImageView profile = findViewById(R.id.imgProfile);
-
+        EditText hist = findViewById(R.id.edtxtHistory);
+showFileChooser();
+        hist.setText(profile.getDrawable().toString());
     }
+    static int code;
+private void showFileChooser()
+{
+    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+    intent.setType("*/*");
+    try {
+        startActivityForResult(Intent.createChooser(intent,"Select picture"),code);
 
+    } catch (android.content.ActivityNotFoundException ex)
+    {
+       // nzn ka daro
+        Toast.makeText(this, "please install a file manager.",Toast.LENGTH_SHORT).show();
+    }
+}
     int countt=0;
     public void onBtnChangeClick(View view)
     {
