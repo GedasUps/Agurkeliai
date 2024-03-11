@@ -2,7 +2,11 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +23,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
+import com.google.android.material.tabs.TabLayout;
+
+import java.net.URI;
+
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
@@ -39,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(item.getItemId() == R.id.profile){
                 replaceFragment(new ProfileFragment());
+               // getMenuInflater().inflate(R.id.btnPhoto,btn);
             }
             return true;
         });
@@ -46,22 +55,26 @@ public class MainActivity extends AppCompatActivity {
     public void ChangePhoto(View view)
     {
         ImageView profile = findViewById(R.id.imgProfile);
+
         EditText hist = findViewById(R.id.edtxtHistory);
 showFileChooser();
         hist.setText(profile.getDrawable().toString());
     }
-    static int code;
+    static final int code=0;
 private void showFileChooser()
 {
     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
     intent.setType("*/*");
-    try {
-        startActivityForResult(Intent.createChooser(intent,"Select picture"),code);
+    intent.addCategory(Intent.CATEGORY_OPENABLE);
 
-    } catch (android.content.ActivityNotFoundException ex)
-    {
-       // nzn ka daro
-        Toast.makeText(this, "please install a file manager.",Toast.LENGTH_SHORT).show();
+    try {
+        startActivityForResult(
+                Intent.createChooser(intent, "Select a File to Upload"),
+               code);
+    } catch (android.content.ActivityNotFoundException ex) {
+        // Potentially direct the user to the Market with a Dialog
+        Toast.makeText(this, "Please install a File Manager.",
+                Toast.LENGTH_SHORT).show();
     }
 }
     int countt=0;
@@ -101,5 +114,22 @@ private void showFileChooser()
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
+    }
+    @Override
+    protected  void  onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        switch (requestCode) {
+            case code:
+                if (resultCode == RESULT_OK) {
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    ImageView  prof=findViewById(R.id.imgProfile);
+                    prof.setImageURI(uri);
+                    EditText his = findViewById(R.id.edtxtHistory);
+                    his.append( "File Uri: " + uri.toString());// rezulting image path
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
