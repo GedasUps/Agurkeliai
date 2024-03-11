@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,13 +24,19 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
+//import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.*;//is it worth to import all library
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.tabs.TabLayout;
 
 import java.net.URI;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     ActivityMainBinding binding;
+boolean creted=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +48,30 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if(item.getItemId() == R.id.map){
                 replaceFragment(new MapFragment());
+                if(creted=false)
+                {
+
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
+                    mapFragment.getMapAsync(this);
+
+                    creted=true;
+                }
+
             }
             else if(item.getItemId() == R.id.review){
                 replaceFragment(new ReviewFragment());
             }
             else if(item.getItemId() == R.id.profile){
                 replaceFragment(new ProfileFragment());
-               // getMenuInflater().inflate(R.id.btnPhoto,btn);
+
+               // getSupportFragmentManager(). inflate(R.layout.fragment_map,binding.getRoot());
             }
+
             return true;
         });
     }
+
+    //----------------------Profile stuff
     public void ChangePhoto(View view)
     {
         ImageView profile = findViewById(R.id.imgProfile);
@@ -77,6 +97,23 @@ private void showFileChooser()
                 Toast.LENGTH_SHORT).show();
     }
 }
+    @Override
+    protected  void  onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        switch (requestCode) {
+            case code:
+                if (resultCode == RESULT_OK) {
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    ImageView  prof=findViewById(R.id.imgProfile);
+                    prof.setImageURI(uri);
+                    EditText his = findViewById(R.id.edtxtHistory);
+                    his.append( "File Uri: " + uri.toString());// rezulting image path
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
     int countt=0;
     public void onBtnChangeClick(View view)
     {
@@ -108,28 +145,22 @@ private void showFileChooser()
         }
 
     }
+// -----------------------MAps stuff----------------------
+private GoogleMap gMap;
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+    gMap =googleMap;
 
+    LatLng loc = new LatLng(-34,151);
+    gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
+    gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+    }
     private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
-    @Override
-    protected  void  onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        switch (requestCode) {
-            case code:
-                if (resultCode == RESULT_OK) {
-                    // Get the Uri of the selected file
-                    Uri uri = data.getData();
-                    ImageView  prof=findViewById(R.id.imgProfile);
-                    prof.setImageURI(uri);
-                    EditText his = findViewById(R.id.edtxtHistory);
-                    his.append( "File Uri: " + uri.toString());// rezulting image path
-                }
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+
+
 }
