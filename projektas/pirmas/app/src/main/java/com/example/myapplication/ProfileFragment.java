@@ -66,13 +66,5 @@ public class ProfileFragment extends Fragment  {
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
-    public  void ChangeContact(View view)
-    {
-        EditText name = getView().findViewById(R.id.edtxtName);
-        EditText email = getView().findViewById(R.id.edtxtName);
-        EditText number = getView().findViewById(R.id.edtxtName);
-        ListView hist = getView().findViewById(R.id.lstHistory);
-        int count  = hist.getFooterViewsCount();
 
-    }
 }

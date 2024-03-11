@@ -6,17 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ProfileFragment">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="155dp"
-        android:layout_height="161dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.937"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
-
     <EditText
         android:id="@+id/edtxtName"
         android:layout_width="195dp"
@@ -40,7 +29,6 @@
         android:layout_width="195dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
-
         android:layout_marginTop="16dp"
         android:ems="10"
         android:enabled="false"
@@ -48,7 +36,6 @@
         android:inputType="number"
         android:minHeight="48dp"
         android:text="+"
-
         app:layout_constraintEnd_toEndOf="@+id/edtxtEmail"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/edtxtEmail"
@@ -59,11 +46,9 @@
         android:layout_width="195dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
-
         android:layout_marginTop="16dp"
         android:ems="10"
         android:enabled="false"
-
         android:hint="Email"
         android:inputType="text"
         android:minHeight="48dp"
@@ -76,20 +61,19 @@
         android:id="@+id/btnPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginEnd="2dp"
+        android:onClick="ChangePhoto"
         android:text="Change picture"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.833"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        android:onClick="ChangePhoto"/>
+        app:layout_constraintEnd_toEndOf="@+id/imgProfile"
+        app:layout_constraintStart_toStartOf="@+id/imgProfile"
+        app:layout_constraintTop_toBottomOf="@+id/imgProfile" />
 
     <Button
         android:id="@+id/btnChangeContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_marginTop="36dp"
         android:onClick="onBtnChangeClick"
         android:text="Change contacts"
@@ -99,9 +83,9 @@
         app:layout_constraintTop_toBottomOf="@+id/edtxtNumber" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="151dp"
-        android:layout_height="162dp"
+        android:id="@+id/imgProfile"
+        android:layout_width="156dp"
+        android:layout_height="192dp"
         android:layout_marginTop="28dp"
         android:src="@mipmap/ic_launcher"
         app:layout_constraintBottom_toTopOf="@+id/btnPhoto"
