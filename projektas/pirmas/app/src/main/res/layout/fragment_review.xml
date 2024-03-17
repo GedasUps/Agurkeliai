@@ -3,14 +3,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_alignWithParentIfMissing="true"
+    android:background="#81BCD3"
     tools:context=".ReviewFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="cia kelsim reviews"
-        android:textSize = "26dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:text="Sukurti komentarą"
+        android:textSize="26dp" />
+
+    <EditText
+        android:id="@+id/editTextTextMultiLine"
+        android:layout_width="308dp"
+        android:layout_height="125dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="0dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:text="Komentaras" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="167dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="100dp"
+        android:text="Išsiųsti komentarą" />
+
+    <EditText
+        android:id="@+id/editTextTextEmailAddress"
+        android:layout_width="305dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="95dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:text="El. paštas" />
 
 </FrameLayout>
