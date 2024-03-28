@@ -1,4 +1,4 @@
-/*package com.example.myapplication;
+package com.example.myapplication;
 import java.time.DateTimeException;
 import  java.util.*;
 public class entry {
@@ -12,6 +12,7 @@ public class entry {
         this.name=name;
         this.date=date;
         this.text=text;
+        /*Padarytas pakeitimas*/
     }
     public entry()
     {
@@ -24,4 +25,3 @@ public class entry {
 
 
 }
-*/
