@@ -11,7 +11,8 @@ public class entry {
         this.id=id;
         this.name=name;
         this.date=date;
-
+        this.text=text;
+        /*Padarytas pakeitimas*/
     }
     public entry()
     {
