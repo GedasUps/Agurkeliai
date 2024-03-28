@@ -1,4 +1,4 @@
-/*package com.example.myapplication;
+package com.example.myapplication;
 import java.time.DateTimeException;
 import  java.util.*;
 public class entry {
@@ -11,7 +11,7 @@ public class entry {
         this.id=id;
         this.name=name;
         this.date=date;
-        this.text=text;
+
     }
     public entry()
     {
@@ -24,4 +24,3 @@ public class entry {
 
 
 }
-*/
