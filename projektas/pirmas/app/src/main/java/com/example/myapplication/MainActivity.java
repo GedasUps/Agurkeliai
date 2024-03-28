@@ -50,10 +50,8 @@ boolean creted=false;
                 replaceFragment(new MapFragment());
                 if(creted=false)
                 {
-
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
                     mapFragment.getMapAsync(this);
-
                     creted=true;
                 }
 
