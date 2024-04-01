@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.nfc.Tag;
@@ -37,12 +38,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     ActivityMainBinding binding;
 boolean creted=false;
-
+    SharedPreferences sp;//=getSharedPreferences("Login",MODE_PRIVATE);//puts data;
+    SharedPreferences spGet;//=this.getSharedPreferences("Login",MODE_PRIVATE);//gets data form it;
+    SharedPreferences.Editor ed;//=sp.edit();
+String uName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        sp = getSharedPreferences("Login",MODE_PRIVATE);//puts data
+        //spGet = this.getSharedPreferences("Login",MODE_PRIVATE);//gets data form it
+         ed = sp.edit();// init local data storing
+
         replaceFragment(new MapFragment());
         
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -53,6 +61,7 @@ boolean creted=false;
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
                     mapFragment.getMapAsync(this);
                     creted=true;
+
                 }
 
             }
@@ -62,7 +71,7 @@ boolean creted=false;
             else if(item.getItemId() == R.id.profile){
                 replaceFragment(new ProfileFragment());
 
-               // getSupportFragmentManager(). inflate(R.layout.fragment_map,binding.getRoot());
+
             }
 
             return true;
@@ -82,7 +91,7 @@ showFileChooser();
 private void showFileChooser()
 {
     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-    intent.setType("*/*");
+    intent.setType("image/*");
     intent.addCategory(Intent.CATEGORY_OPENABLE);
 
     try {
@@ -105,8 +114,10 @@ private void showFileChooser()
                     Uri uri = data.getData();
                     ImageView  prof=findViewById(R.id.imgProfile);
                     prof.setImageURI(uri);
-                    EditText his = findViewById(R.id.edtxtHistory);
-                    his.append( "File Uri: " + uri.toString());// rezulting image path
+                    ed.putString("profPic",uri.toString());
+                    ed.commit();
+                    //EditText his = findViewById(R.id.edtxtHistory);
+                    //his.append( "File Uri: " + uri.toString());// rezulting image path
                 }
                 break;
         }
@@ -123,10 +134,15 @@ private void showFileChooser()
         EditText email= findViewById(R.id.edtxtEmail);
         EditText number= findViewById(R.id.edtxtNumber);
         EditText history= findViewById(R.id.edtxtHistory);
+if (uName!=null)
+{
+    name.setText(uName);
+}
         // lets to change contacts
 
         if(change.getText().toString().equals("Save")&&countt>0)
         {
+
             name.setEnabled(false);
             email.setEnabled(false);
             number.setEnabled(false);
@@ -138,9 +154,20 @@ private void showFileChooser()
             name.setEnabled(true);
             email.setEnabled(true);
             number.setEnabled(true);
+
             change.setText("Save");
             countt++;
+            if(name.getText().toString().length()>0)
+            {
+                ed.putString("name",name.getText().toString());
+                ed.commit();
+                ed.putString("email",email.getText().toString());
+                ed.commit();
+                ed.putString("number",number.getText().toString());
+                ed.commit();
+            }
         }
+      //  String n = new String(name.getText().toString());
 
     }
 // -----------------------MAps stuff----------------------

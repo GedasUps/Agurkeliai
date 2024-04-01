@@ -1,5 +1,9 @@
 package com.example.myapplication;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+
+import com.example.myapplication.databinding.ActivityMainBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +30,8 @@ public class ProfileFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private ActivityMainBinding viewModel;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -56,6 +65,7 @@ public class ProfileFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+         //   SharedPreferences spGet=getView().this.getSharedPreferences("Login",MODE_PRIVATE);//gets data form it;
 
         }
 
@@ -65,7 +75,32 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        EditText name = view.findViewById(R.id.edtxtName);
+        EditText email = view.findViewById(R.id.edtxtEmail);
+        EditText number = view.findViewById(R.id.edtxtNumber);
+        ImageView profile = view.findViewById(R.id.imgProfile);
+        // Get data from SharedPreferences
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Login", MODE_PRIVATE);
+        String userName = sharedPreferences.getString("name", null); // Assuming "userName" is the key for the user's name
+        String userMail = sharedPreferences.getString("email", null);
+        String userNumber = sharedPreferences.getString("number", null);
+        String pic = sharedPreferences.getString("profPic", null);
+        if(pic!=null&&profile.getDrawable().toString()!=pic)// profile image saving and setting
+        {
+            //Uri uri = Uri.parse(pic);
+           // profile.setImageURI(uri);
+        }
+
+
+        // Set the text of EditText
+        name.setText(userName);
+        email.setText(userMail);
+        number.setText(userNumber);
+
+
+        return view;
     }
 
 
