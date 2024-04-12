@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     SharedPreferences spGet;//=this.getSharedPreferences("Login",MODE_PRIVATE);//gets data form it;
     SharedPreferences.Editor ed;//=sp.edit();
     String uName;
-    private GoogleMap gMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (item.getItemId() == R.id.map) {
                 replaceFragment(new MapFragment());
                 if (creted = false) {
-                   // SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
-                   // mapFragment.getMapAsync(this);
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
+                    mapFragment.getMapAsync(this);
                     creted = true;
 
                 }
@@ -69,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 replaceFragment(new ReviewFragment());
             } else if (item.getItemId() == R.id.profile) {
                 replaceFragment(new ProfileFragment());
+
+
             }
 
             return true;
@@ -165,11 +166,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // -----------------------MAps stuff----------------------
-
+    private GoogleMap gMap;
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         gMap = googleMap;
+
         LatLng loc = new LatLng(-34, 151);
         gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
         gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
