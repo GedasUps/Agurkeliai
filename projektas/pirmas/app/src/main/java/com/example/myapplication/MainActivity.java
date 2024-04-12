@@ -34,41 +34,39 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.net.URI;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     ActivityMainBinding binding;
-boolean creted=false;
+    boolean creted = false;
     SharedPreferences sp;//=getSharedPreferences("Login",MODE_PRIVATE);//puts data;
     SharedPreferences spGet;//=this.getSharedPreferences("Login",MODE_PRIVATE);//gets data form it;
     SharedPreferences.Editor ed;//=sp.edit();
-String uName;
+    String uName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        sp = getSharedPreferences("Login",MODE_PRIVATE);//puts data
+        sp = getSharedPreferences("Login", MODE_PRIVATE);//puts data
         //spGet = this.getSharedPreferences("Login",MODE_PRIVATE);//gets data form it
-         ed = sp.edit();// init local data storing
+        ed = sp.edit();// init local data storing
 
         replaceFragment(new MapFragment());
-        
+
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if(item.getItemId() == R.id.map){
+            if (item.getItemId() == R.id.map) {
                 replaceFragment(new MapFragment());
-                if(creted=false)
-                {
+                if (creted = false) {
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
                     mapFragment.getMapAsync(this);
-                    creted=true;
+                    creted = true;
 
                 }
 
-            }
-            else if(item.getItemId() == R.id.review){
+            } else if (item.getItemId() == R.id.review) {
                 replaceFragment(new ReviewFragment());
-            }
-            else if(item.getItemId() == R.id.profile){
+            } else if (item.getItemId() == R.id.profile) {
                 replaceFragment(new ProfileFragment());
 
 
@@ -79,113 +77,111 @@ String uName;
     }
 
     //----------------------Profile stuff
-    public void ChangePhoto(View view)
-    {
+    public void ChangePhoto(View view) {
         ImageView profile = findViewById(R.id.imgProfile);
 
         EditText hist = findViewById(R.id.edtxtHistory);
-showFileChooser();
+        showFileChooser();
         hist.setText(profile.getDrawable().toString());
     }
-    static final int code=0;
-private void showFileChooser()
-{
-    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-    intent.setType("image/*");
-    intent.addCategory(Intent.CATEGORY_OPENABLE);
 
-    try {
-        startActivityForResult(
-                Intent.createChooser(intent, "Select a File to Upload"),
-               code);
-    } catch (android.content.ActivityNotFoundException ex) {
-        // Potentially direct the user to the Market with a Dialog
-        Toast.makeText(this, "Please install a File Manager.",
-                Toast.LENGTH_SHORT).show();
+    static final int code = 0;
+
+    private void showFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, "Select a File to Upload"),
+                    code);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(this, "Please install a File Manager.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
-}
+
     @Override
-    protected  void  onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case code:
                 if (resultCode == RESULT_OK) {
                     // Get the Uri of the selected file
                     Uri uri = data.getData();
-                    ImageView  prof=findViewById(R.id.imgProfile);
+                    ImageView prof = findViewById(R.id.imgProfile);
                     prof.setImageURI(uri);
-                    ed.putString("profPic",uri.toString());
+                    ed.putString("profPic",uri.toString() );
                     ed.commit();
-                    //EditText his = findViewById(R.id.edtxtHistory);
-                    //his.append( "File Uri: " + uri.toString());// rezulting image path
+
                 }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    int countt=0;
-    public void onBtnChangeClick(View view)
-    {
+
+    int countt = 0;
+
+    public void onBtnChangeClick(View view) {
         // gets button stuff
         Button change = findViewById(R.id.btnChangeContacts);
 
         // gets all edtxt elemts from the scene
-        EditText name= findViewById(R.id.edtxtName);
-        EditText email= findViewById(R.id.edtxtEmail);
-        EditText number= findViewById(R.id.edtxtNumber);
-        EditText history= findViewById(R.id.edtxtHistory);
-if (uName!=null)
-{
-    name.setText(uName);
-}
+        EditText name = findViewById(R.id.edtxtName);
+        EditText email = findViewById(R.id.edtxtEmail);
+        EditText number = findViewById(R.id.edtxtNumber);
+        EditText history = findViewById(R.id.edtxtHistory);
+        if (uName != null) {
+            name.setText(uName);
+        }
         // lets to change contacts
 
-        if(change.getText().toString().equals("Save")&&countt>0)
-        {
+        if (change.getText().toString().equals("Save") && countt > 0) {
 
             name.setEnabled(false);
             email.setEnabled(false);
             number.setEnabled(false);
             change.setText("Change contacts");
             countt--;
-        }
-        else
-        {
+        } else {
             name.setEnabled(true);
             email.setEnabled(true);
             number.setEnabled(true);
 
             change.setText("Save");
+        }
             countt++;
-            if(name.getText().toString().length()>0)
-            {
-                ed.putString("name",name.getText().toString());
+            if (name.getText().toString().length() > 0) {
+                ed.putString("name", name.getText().toString());
                 ed.commit();
-                ed.putString("email",email.getText().toString());
+                ed.putString("email", email.getText().toString());
                 ed.commit();
-                ed.putString("number",number.getText().toString());
+                ed.putString("number", number.getText().toString());
                 ed.commit();
             }
-        }
-      //  String n = new String(name.getText().toString());
+
+        //  String n = new String(name.getText().toString());
 
     }
-// -----------------------MAps stuff----------------------
-private GoogleMap gMap;
+
+    // -----------------------MAps stuff----------------------
+    private GoogleMap gMap;
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-    gMap =googleMap;
+        gMap = googleMap;
 
-    LatLng loc = new LatLng(-34,151);
-    gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
-    gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        LatLng loc = new LatLng(-34, 151);
+        gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
+        gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
     }
-    private void replaceFragment(Fragment fragment){
+
+    private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
-
-
 }
+

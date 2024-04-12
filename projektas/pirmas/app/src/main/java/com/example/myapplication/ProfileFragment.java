@@ -3,6 +3,7 @@ package com.example.myapplication;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -81,24 +82,34 @@ public class ProfileFragment extends Fragment {
         EditText email = view.findViewById(R.id.edtxtEmail);
         EditText number = view.findViewById(R.id.edtxtNumber);
         ImageView profile = view.findViewById(R.id.imgProfile);
+        EditText hist = view.findViewById(R.id.edtxtHistory);
+
         // Get data from SharedPreferences
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Login", MODE_PRIVATE);
         String userName = sharedPreferences.getString("name", null); // Assuming "userName" is the key for the user's name
         String userMail = sharedPreferences.getString("email", null);
         String userNumber = sharedPreferences.getString("number", null);
         String pic = sharedPreferences.getString("profPic", null);
-        if(pic!=null&&profile.getDrawable().toString()!=pic)// profile image saving and setting
-        {
-            //Uri uri = Uri.parse(pic);
-           // profile.setImageURI(uri);
-        }
 
-
-        // Set the text of EditText
+        // Set user data
         name.setText(userName);
         email.setText(userMail);
         number.setText(userNumber);
 
+        // Check if the profile picture is set
+        if (pic != null) {
+            try {
+                Uri uri = Uri.parse(pic);
+                profile.setImageURI(uri);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Handle exception (e.g., load default profile picture)
+                profile.setImageResource(R.drawable.baseline_account_circle_24);
+            }
+        } else {
+            // Load default profile picture if not set
+            profile.setImageResource(R.drawable.baseline_account_circle_24);
+        }
 
         return view;
     }
