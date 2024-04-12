@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback{
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +29,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private GoogleMap gMap;
+
 
     public MapFragment() {
         // Required empty public constructor
@@ -52,6 +54,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         return fragment;
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,15 +69,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        super.onCreate(savedInstanceState);
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        // Get the SupportMapFragment and request the map asynchronously
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mpView);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+
+        return view;
     }
-    private GoogleMap gMap;
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        gMap =googleMap;
+        gMap = googleMap;
         LatLng loc = new LatLng(-34, 151);
-        gMap.addMarker(new MarkerOptions().position(loc).title("Sydney"));
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom( loc,12));
+        gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
+        gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
     }
+    //private GoogleMap gMap;
+
 }
