@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.nfc.Tag;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     SharedPreferences spGet;//=this.getSharedPreferences("Login",MODE_PRIVATE);//gets data form it;
     SharedPreferences.Editor ed;//=sp.edit();
     String uName;
+    private GoogleMap gMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (item.getItemId() == R.id.map) {
                 replaceFragment(new MapFragment());
                 if (creted = false) {
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
-                    mapFragment.getMapAsync(this);
+                    // SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
+                    // mapFragment.getMapAsync(this);
                     creted = true;
 
                 }
@@ -68,8 +71,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 replaceFragment(new ReviewFragment());
             } else if (item.getItemId() == R.id.profile) {
                 replaceFragment(new ProfileFragment());
-
-
             }
 
             return true;
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Uri uri = data.getData();
                     ImageView prof = findViewById(R.id.imgProfile);
                     prof.setImageURI(uri);
-                    ed.putString("profPic",uri.toString() );
+                    ed.putString("profPic", uri.toString());
                     ed.commit();
 
                 }
@@ -151,30 +152,40 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             change.setText("Save");
         }
-            countt++;
-            if (name.getText().toString().length() > 0) {
-                ed.putString("name", name.getText().toString());
-                ed.commit();
-                ed.putString("email", email.getText().toString());
-                ed.commit();
-                ed.putString("number", number.getText().toString());
-                ed.commit();
-            }
+        countt++;
+        if (name.getText().toString().length() > 0) {
+            ed.putString("name", name.getText().toString());
+            ed.commit();
+            ed.putString("email", email.getText().toString());
+            ed.commit();
+            ed.putString("number", number.getText().toString());
+            ed.commit();
+        }
 
         //  String n = new String(name.getText().toString());
 
     }
 
     // -----------------------MAps stuff----------------------
-    private GoogleMap gMap;
+
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         gMap = googleMap;
-
         LatLng loc = new LatLng(-34, 151);
         gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
         gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        gMap.setMyLocationEnabled(true);
     }
 
     private void replaceFragment(Fragment fragment) {
