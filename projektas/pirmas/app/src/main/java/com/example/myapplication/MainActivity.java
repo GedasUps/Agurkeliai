@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     SharedPreferences spGet;//=this.getSharedPreferences("Login",MODE_PRIVATE);//gets data form it;
     SharedPreferences.Editor ed;//=sp.edit();
     String uName;
-    private GoogleMap gMap;
 
     private final int FINE_PEMITON_CODE = 1;
     Location currentLocation;
@@ -73,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 replaceFragment(new MapFragment());
                 if (creted = false) {
 
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
+                    mapFragment.getMapAsync(this);
+
                     creted = true;
 
                 }
@@ -81,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 replaceFragment(new ReviewFragment());
             } else if (item.getItemId() == R.id.profile) {
                 replaceFragment(new ProfileFragment());
+
+
             }
 
             return true;
@@ -178,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // -----------------------MAps stuff----------------------
 
+
    /* protected void getLastLocation() {
         //checks whether location permissions is granted
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -198,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
@@ -216,10 +222,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-       gMap = googleMap;
-        //LatLng loc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-       // gMap.addMarker(new MarkerOptions().position(loc).title("My Location"));
-      //  gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+
+        gMap = googleMap;
+
+        LatLng loc = new LatLng(-34, 151);
+        gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
+        gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+
     }
 
 
