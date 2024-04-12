@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         sp = getSharedPreferences("Login", MODE_PRIVATE);//puts data
         ed = sp.edit();// init local data storing
         // maps permissions
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        getLastLocation();
+        //fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+      //  getLastLocation();
 
         replaceFragment(new MapFragment());
 
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // -----------------------MAps stuff----------------------
 
-    protected void getLastLocation() {
+   /* protected void getLastLocation() {
         //checks whether location permissions is granted
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PEMITON_CODE);// at run time ask user permission
@@ -212,13 +212,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     }
+
+    */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        gMap = googleMap;
-        LatLng loc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        gMap.addMarker(new MarkerOptions().position(loc).title("My Location"));
-        gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+       gMap = googleMap;
+        //LatLng loc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+       // gMap.addMarker(new MarkerOptions().position(loc).title("My Location"));
+      //  gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
     }
+
+
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

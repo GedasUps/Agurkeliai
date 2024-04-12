@@ -83,7 +83,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
       gMap = googleMap;
-     LatLng loc = new LatLng(54, 151);
+     LatLng loc = new LatLng(54, 24);
      gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
       gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
    }
