@@ -82,11 +82,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        gMap = googleMap;
-        LatLng loc = new LatLng(-34, 151);
-        gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
-        gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-    }
+      gMap = googleMap;
+     LatLng loc = new LatLng(54, 151);
+     gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
+      gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+   }
     //private GoogleMap gMap;
 
 }
