@@ -1,8 +1,9 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
-
+import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -65,17 +66,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        super.onCreate(savedInstanceState);
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        // Get the SupportMapFragment and request the map asynchronously
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mpView);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+
+        return view;
     }
+    private static final int PERMISSION_REQUEST_CODE = 1001;
     private GoogleMap gMap;
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
       gMap = googleMap;
-     LatLng loc = new LatLng(54, 24);
-     gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
+      LatLng loc = new LatLng(54, 24);
+      gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
       gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // If permissions are not granted, request them
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_CODE);
+        } else {
+            // Permissions are granted, enable location
+            gMap.setMyLocationEnabled(true);
+        }
    }
     //private GoogleMap gMap;
 

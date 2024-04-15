@@ -29,8 +29,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
 //import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
+//import com.google.android.gms.location.FusedLocationProviderClient;
+//import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.*;//is it worth to import all library
 
 import com.google.android.gms.maps.model.LatLng;
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private final int FINE_PEMITON_CODE = 1;
     Location currentLocation;
-    FusedLocationProviderClient fusedLocationProviderClient;
+    //FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,15 +220,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     */
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-
-        gMap = googleMap;
-
+        //gMap = googleMap;
         LatLng loc = new LatLng(-34, 151);
-        gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
-        gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-
+        //gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
+        //gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
     }
 
 
