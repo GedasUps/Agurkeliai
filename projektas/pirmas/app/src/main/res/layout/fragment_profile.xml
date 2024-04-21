@@ -10,6 +10,7 @@
         android:id="@+id/edtxtName"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
               
         android:layout_marginTop="28dp"
               
@@ -28,6 +29,7 @@
         android:id="@+id/edtxtNumber"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
         android:layout_marginStart="1dp"
         android:layout_marginTop="16dp"
         android:ems="10"
@@ -45,6 +47,7 @@
         android:id="@+id/edtxtEmail"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
         android:layout_marginStart="1dp"
         android:layout_marginTop="16dp"
         android:ems="10"
