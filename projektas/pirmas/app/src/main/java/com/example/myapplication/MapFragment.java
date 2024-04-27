@@ -135,9 +135,9 @@ private Location originLoc;
             destinationMarker.remove();
         }
         destinationMarker=gMap.addMarker(new MarkerOptions().position(point));
-        //originDes = point;
+        originDes = point;
 
-       // originPos = originLoc;
+       originPos = originLoc;
         navButton.setBackgroundColor(getResources().getColor(R.color.blue));
         navButton.setEnabled(true);
        //
