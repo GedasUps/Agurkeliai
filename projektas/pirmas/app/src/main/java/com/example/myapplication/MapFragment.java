@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
+import android.location.Location;
 import android.os.Bundle;
 import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
@@ -9,10 +11,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.*;//is it worth to import all library
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
@@ -20,12 +24,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback{
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+private Location originLoc;
+    private Location originPos;
+    private LatLng originDes;
+    private Button navButton;
+    private Marker destinationMarker;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -53,13 +63,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        // Initialize navButton
+
+
     }
 
     @Override
@@ -67,7 +82,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+        navButton = view.findViewById(R.id.btnNavigate);
 
+        // Set the click listener for the navigation button
+        navButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle navigation button click event
+            }
+        });
         // Get the SupportMapFragment and request the map asynchronously
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mpView);
         if (mapFragment != null) {
@@ -81,18 +104,44 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
-      gMap = googleMap;
-      LatLng loc = new LatLng(54, 24);
-      gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
-      gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        gMap = googleMap;
+
+        // Initialize originLoc with a default location
+        originLoc = new Location("");
+        originLoc.setLatitude(-34);
+        originLoc.setLongitude(151);
+
+        // Add any other map initialization code here
+        LatLng loc = new LatLng(-34, 151);
+     // gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
+     // gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // If permissions are not granted, request them
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_CODE);
         } else {
             // Permissions are granted, enable location
             gMap.setMyLocationEnabled(true);
+            gMap.setOnMapClickListener(this);
         }
    }
+
+
+    //@SuppressLint("ResourceAsColor")
+    @Override
+    public void onMapClick(@NonNull LatLng point) {
+
+        if (destinationMarker!=null)
+        {
+            destinationMarker.remove();
+        }
+        destinationMarker=gMap.addMarker(new MarkerOptions().position(point));
+        //originDes = point;
+
+       // originPos = originLoc;
+        navButton.setBackgroundColor(getResources().getColor(R.color.blue));
+        navButton.setEnabled(true);
+       //
+    }
     //private GoogleMap gMap;
 
 

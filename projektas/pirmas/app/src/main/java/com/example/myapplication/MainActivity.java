@@ -41,7 +41,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.net.URI;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements  OnMapReadyCallback  {
 
     ActivityMainBinding binding;
     boolean creted = false;
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     Location currentLocation;
     //FusedLocationProviderClient fusedLocationProviderClient;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,32 +62,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(binding.getRoot());
         sp = getSharedPreferences("Login", MODE_PRIVATE);//puts data
         ed = sp.edit();// init local data storing
-        // maps permissions
-        //fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-      //  getLastLocation();
 
+        // Initialize the map fragment
         replaceFragment(new MapFragment());
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.map) {
-                replaceFragment(new MapFragment());
-                if (creted = false) {
-
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
-                    mapFragment.getMapAsync(this);
-
-                    creted = true;
-
-                }
-
+                // Do nothing if already on map
             } else if (item.getItemId() == R.id.review) {
                 replaceFragment(new ReviewFragment());
             } else if (item.getItemId() == R.id.profile) {
                 replaceFragment(new ProfileFragment());
-
-
             }
-
             return true;
         });
     }
@@ -183,51 +170,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     // -----------------------MAps stuff----------------------
 
 
-   /* protected void getLastLocation() {
-        //checks whether location permissions is granted
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PEMITON_CODE);// at run time ask user permission
-            return;
-        }
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if(location!=null)
-                {
-                    currentLocation = location;
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mpView);
-                    mapFragment.getMapAsync(MainActivity.this);
-                }
-            }
-        });
-}
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        if(requestCode==FINE_PEMITON_CODE)
-        {
-            if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED)
-            {
-                getLastLocation();
-            }else
-            {
-                Toast.makeText(this,"Location permission is denied, please allow permission ",Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
-    */
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        //gMap = googleMap;
-        LatLng loc = new LatLng(-34, 151);
-        //gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
-        //gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-    }
 
 
     private void replaceFragment(Fragment fragment) {
@@ -235,6 +180,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        //gMap = googleMap;
+        LatLng loc = new LatLng(-34, 151);
+        //gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
+        //gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
     }
 }
 
