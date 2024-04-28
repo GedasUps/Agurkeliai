@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -7,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -20,6 +22,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements  OnMapReadyCallba
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.map) {
                 // Do nothing if already on map
+                replaceFragment(new MapFragment());
             } else if (item.getItemId() == R.id.review) {
                 replaceFragment(new ReviewFragment());
             } else if (item.getItemId() == R.id.profile) {
@@ -79,49 +83,6 @@ public class MainActivity extends AppCompatActivity implements  OnMapReadyCallba
     }
 
     //----------------------Profile stuff
-    public void ChangePhoto(View view) {
-        ImageView profile = findViewById(R.id.imgProfile);
-
-        EditText hist = findViewById(R.id.edtxtHistory);
-        showFileChooser();
-        hist.setText(profile.getDrawable().toString());
-    }
-
-    static final int code = 0;
-
-    private void showFileChooser() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        try {
-            startActivityForResult(
-                    Intent.createChooser(intent, "Select a File to Upload"),
-                    code);
-        } catch (android.content.ActivityNotFoundException ex) {
-            // Potentially direct the user to the Market with a Dialog
-            Toast.makeText(this, "Please install a File Manager.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case code:
-                if (resultCode == RESULT_OK) {
-                    // Get the Uri of the selected file
-                    Uri uri = data.getData();
-                    ImageView prof = findViewById(R.id.imgProfile);
-                    prof.setImageURI(uri);
-                    ed.putString("profPic", uri.toString());
-                    ed.commit();
-
-                }
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     int countt = 0;
 
@@ -167,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements  OnMapReadyCallba
 
     }
 
-    // -----------------------MAps stuff----------------------
+
 
 
 

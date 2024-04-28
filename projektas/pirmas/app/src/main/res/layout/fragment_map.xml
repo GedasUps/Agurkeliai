@@ -39,7 +39,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:background="@color/LightGray"
+        android:background="@color/blue"
         android:enabled="false"
         android:text="Navigation"
         android:textColor="@color/LightGray" />

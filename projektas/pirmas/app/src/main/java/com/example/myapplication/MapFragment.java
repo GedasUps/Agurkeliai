@@ -134,7 +134,7 @@ private Location originLoc;
         {
             destinationMarker.remove();
         }
-        destinationMarker=gMap.addMarker(new MarkerOptions().position(point));
+        destinationMarker=gMap.addMarker(new MarkerOptions().position(point).title("Your choice").flat(false));
         originDes = point;
 
        originPos = originLoc;
