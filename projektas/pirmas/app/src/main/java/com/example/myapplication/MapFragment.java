@@ -130,7 +130,7 @@ private Location originLoc;
                     Address address = addressList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                     gMap.addMarker(new MarkerOptions().position(latLng).title(location));
-                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
                 }
 
                 return false;

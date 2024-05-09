@@ -127,15 +127,6 @@ public class MainActivity extends AppCompatActivity implements  OnMapReadyCallba
         //  String n = new String(name.getText().toString());
 
     }
-
-
-
-
-
-
-
-
-
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
