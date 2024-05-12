@@ -203,15 +203,6 @@ String ConnectionRez="";
         //  String n = new String(name.getText().toString());
 
     }
-
-
-
-
-
-
-
-
-
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

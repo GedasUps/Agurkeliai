@@ -1,8 +1,14 @@
 package com.example.myapplication;
 
+
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.SharedPreferences;
+
+import android.annotation.SuppressLint;
+import android.location.Address;
+import android.location.Geocoder;
+
 import android.location.Location;
 import android.os.Bundle;
 import android.content.pm.PackageManager;
@@ -17,9 +23,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import android.widget.SearchView;
+
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.*;//is it worth to import all library
@@ -27,6 +37,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.List;
+import androidx.annotation.Nullable;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MapFragment#newInstance} factory method to
@@ -87,11 +100,13 @@ private ScrollView form;
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
         // Initialize navButton
         sp = getContext().getSharedPreferences("Loc", MODE_PRIVATE);//puts data
         sp1 = getContext().getSharedPreferences("Login", MODE_PRIVATE);//puts data
         ed = sp.edit();// init local data storing
         ed1 = sp1.edit();// init local data storing
+
 
 
 
@@ -103,9 +118,15 @@ private ScrollView form;
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         navButton = view.findViewById(R.id.btnNavigate);
+
         form=view.findViewById(R.id.layPin);
         form.setVisibility(View.INVISIBLE);
         form.setEnabled(false);
+
+
+        mapSeachView = view.findViewById(R.id.mapSearch);
+
+
         // Set the click listener for the navigation button
         navButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,8 +142,45 @@ private ScrollView form;
 
         return view;
     }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Now you can set listeners or other interactions
+        mapSeachView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String location = mapSeachView.getQuery().toString();
+                List<Address> addressList = null;
+
+                if (location != null) {
+                    Geocoder geocoder = new Geocoder(getContext()); // Use context from the fragment
+                    try {
+                        addressList = geocoder.getFromLocationName(location, 1);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                if (addressList != null && !addressList.isEmpty()) {
+                    Address address = addressList.get(0);
+                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                    gMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+    }
     private static final int PERMISSION_REQUEST_CODE = 1001;
     private GoogleMap gMap;
+    private SearchView mapSeachView;
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
