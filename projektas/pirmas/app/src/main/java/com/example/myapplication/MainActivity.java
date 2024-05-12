@@ -191,7 +191,7 @@ String ConnectionRez="";
             change.setText("Save");
         }
         countt++;
-        if (name.getText().toString().length() > 0) {
+        if (!name.getText().toString().isEmpty()) {
             ed.putString("name", name.getText().toString());
             ed.commit();
             ed.putString("email", email.getText().toString());
@@ -216,6 +216,10 @@ String ConnectionRez="";
         LatLng loc = new LatLng(-34, 151);
         //gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
         //gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+    }
+
+    public void onReviewClick(View view) {
+        replaceFragment(new ReviewFragment2());
     }
 }
 
