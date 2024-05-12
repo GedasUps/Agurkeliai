@@ -192,7 +192,7 @@
                         android:stepSize="1" />
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/txtProblem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Patirtis su vieta buvo gera, bet galėjo būti ir geresnė, dar yra keletas trūkūmų, kurias reikia pašalinti."

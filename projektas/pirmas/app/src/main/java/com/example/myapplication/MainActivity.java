@@ -1,62 +1,52 @@
 package com.example.myapplication;
 
-import android.Manifest;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.net.Uri;
-import android.nfc.Tag;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.ScrollView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
-//import com.google.android.gms.maps.SupportMapFragment;
-//import com.google.android.gms.location.FusedLocationProviderClient;
-//import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.*;//is it worth to import all library
-
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.tabs.TabLayout;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 
-import java.net.URI;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import org.threeten.bp.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements  OnMapReadyCallback  {
 
     ActivityMainBinding binding;
     boolean creted = false;
     SharedPreferences sp;//=getSharedPreferences("Login",MODE_PRIVATE);//puts data;
+
     SharedPreferences spGet;//=this.getSharedPreferences("Login",MODE_PRIVATE);//gets data form it;
     SharedPreferences.Editor ed;//=sp.edit();
-    String uName;
 
+    String uName;
+    private List<entry> entries=new ArrayList<>();//Review list
     private final int FINE_PEMITON_CODE = 1;
     Location currentLocation;
     //FusedLocationProviderClient fusedLocationProviderClient;
-
+    //database stuff
+Connection connetion;
+String ConnectionRez="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +54,11 @@ public class MainActivity extends AppCompatActivity implements  OnMapReadyCallba
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         sp = getSharedPreferences("Login", MODE_PRIVATE);//puts data
+
+
         ed = sp.edit();// init local data storing
+
+        AndroidThreeTen.init(this);
 
         // Initialize the map fragment
         replaceFragment(new MapFragment());
@@ -82,10 +76,92 @@ public class MainActivity extends AppCompatActivity implements  OnMapReadyCallba
         });
     }
 
+   //----------------------Map pin sttuff
+    private ScrollView form;
+    public void GetTextFromSql(View view)
+    {
+        try {
+            ConnectioHelper connectioHelper = new ConnectioHelper();
+            connetion = connectioHelper.connection();
+            Log.i("HAHA","HAHAHA");
+            if (connetion!=null)
+            {
+                String query = "SELECT * From Markers " ;
+                Statement st = connetion.createStatement();
+                ResultSet rs = st.executeQuery(query);
+
+                while (rs.next())
+                {
+                    LatLng temp = new LatLng(rs.getDouble(5),rs.getDouble(6));
+                    entry oldR= new entry(rs.getString(1),rs.getString(2),rs.getDate(4),rs.getString(3),temp);
+                    Log.i("SQL GOOD",oldR.getname());
+                }
+
+
+            }
+
+        }catch (Exception ex)
+        {
+            Log.e("ERROR SQL", ex.getMessage());
+        }
+    }
+    public void onSaveReviewClick(View view)
+    {
+        Button save= findViewById(R.id.btnSave);
+
+        GetTextFromSql(view);
+        SharedPreferences sharedPreferences = getSharedPreferences("Loc", MODE_PRIVATE);
+        String markerData = sharedPreferences.getString("loc", null);
+        String name=sharedPreferences.getString("name", null);
+        String dck=sharedPreferences.getString("dck", null);
+
+// uzpildo atsidariusi window
+        if (markerData!=null) {
+
+
+            // Split the markerData string to extract latitude and longitude
+            String[] parts = markerData.split("[(),]");
+            double latitude = Double.parseDouble(parts[1]);
+            double longitude = Double.parseDouble(parts[2]);
+
+            // Create a new LatLng object
+            LatLng temp = new LatLng(latitude, longitude);
+
+
+// Assuming your LocalDateTime object is named localDateTime
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+// Create a Calendar instance and set its fields using the LocalDateTime object
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(localDateTime.getYear(), localDateTime.getMonthValue() - 1, localDateTime.getDayOfMonth(),
+                    localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond());
+
+// Get the Date object from the Calendar instance
+            Date date = calendar.getTime();
+
+            entry review = new entry(name, date,dck, temp);
+            //close info window
+            form=findViewById(R.id.layPin);
+            form.setVisibility(View.INVISIBLE);
+            form.setEnabled(false);
+            ed.putBoolean("set",true);
+            ed.commit();
+            // Change the button text
+
+        }
+    }
+    public void onCancelReviewClick(View view)
+    {
+        ed.putBoolean("set",false);
+        ed.commit();
+        Button cancel= findViewById(R.id.btnCancel);
+        form=findViewById(R.id.layPin);
+        form.setVisibility(View.INVISIBLE);
+        form.setEnabled(false);
+    }
     //----------------------Profile stuff
 
     int countt = 0;
-
     public void onBtnChangeClick(View view) {
         // gets button stuff
         Button change = findViewById(R.id.btnChangeContacts);
