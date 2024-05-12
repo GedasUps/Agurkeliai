@@ -117,7 +117,7 @@ public class ProfileFragment extends Fragment {
 
         // Set profile picture if it exists
         if (selectedImageUri != null) {
-           
+
             InternalMethods.setProfilePic(getContext(), selectedImageUri, profile);
         }
 

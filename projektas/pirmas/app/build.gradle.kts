@@ -49,5 +49,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.0.1")
     implementation ("com.github.Dhaval2404:ImagePicker:2.1")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation ("com.jakewharton.threetenabp:threetenabp:1.3.0")
+    implementation ("mysql:mysql-connector-java:8.0.28")
 
 }

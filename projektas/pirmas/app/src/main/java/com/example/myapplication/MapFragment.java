@@ -1,17 +1,25 @@
 package com.example.myapplication;
 
-import android.annotation.SuppressLint;
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.*;//is it worth to import all library
@@ -24,7 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class MapFragment extends Fragment implements  OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,14 +44,21 @@ private Location originLoc;
     private Button navButton;
     private Marker destinationMarker;
 
+    SharedPreferences sp;
+    SharedPreferences sp1;
+    SharedPreferences.Editor ed;//=sp.edit();
+    SharedPreferences.Editor ed1;//=sp.edit();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
+private ScrollView form;
     public MapFragment() {
         // Required empty public constructor
     }
+    // Define onSaveReviewClick method
+
 
     /**
      * Use this factory method to create a new instance of
@@ -73,6 +88,11 @@ private Location originLoc;
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         // Initialize navButton
+        sp = getContext().getSharedPreferences("Loc", MODE_PRIVATE);//puts data
+        sp1 = getContext().getSharedPreferences("Login", MODE_PRIVATE);//puts data
+        ed = sp.edit();// init local data storing
+        ed1 = sp1.edit();// init local data storing
+
 
 
     }
@@ -83,7 +103,9 @@ private Location originLoc;
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         navButton = view.findViewById(R.id.btnNavigate);
-
+        form=view.findViewById(R.id.layPin);
+        form.setVisibility(View.INVISIBLE);
+        form.setEnabled(false);
         // Set the click listener for the navigation button
         navButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +144,8 @@ private Location originLoc;
             // Permissions are granted, enable location
             gMap.setMyLocationEnabled(true);
             gMap.setOnMapClickListener(this);
+            gMap.setOnMarkerClickListener(this);
+
         }
    }
 
@@ -129,20 +153,56 @@ private Location originLoc;
     //@SuppressLint("ResourceAsColor")
     @Override
     public void onMapClick(@NonNull LatLng point) {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Login", MODE_PRIVATE);
+        boolean ok = sharedPreferences.getBoolean("set", false);
 
-        if (destinationMarker!=null)
-        {
+        // Check if destinationMarker is not null before removing it
+        if (destinationMarker != null&&ok==false) {
             destinationMarker.remove();
         }
-        destinationMarker=gMap.addMarker(new MarkerOptions().position(point).title("Your choice").flat(false));
+        if (ok) {
+            ed1.putBoolean("set", false);
+            ed1.commit();
+        }
+        destinationMarker = gMap.addMarker(new MarkerOptions().position(point).title("Your choice").draggable(true));
         originDes = point;
-
-       originPos = originLoc;
+        originPos = originLoc;
         navButton.setBackgroundColor(getResources().getColor(R.color.blue));
         navButton.setEnabled(true);
-       //
     }
-    //private GoogleMap gMap;
 
+    @Override
+    public boolean onMarkerClick(@NonNull Marker marker) {
+       // marker.setTitle("Paliekame??");
+        form.setEnabled(true);
+        form.setVisibility(View.VISIBLE);
+        TextView user = getView().findViewById(R.id.txtUser);
+        EditText dek = getView().findViewById(R.id.txtProblem);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Login", MODE_PRIVATE);
+        String userName = sharedPreferences.getString("name", null);
+        user.setText(userName);
+
+        // Find the LinearLayout directly using its ID
+        ConstraintLayout clt = getView().findViewById(R.id.WndThis);
+        //LinearLayout sc  = getView().findViewById(R.id.WndThis);
+        clt.setVisibility(View.VISIBLE);
+        clt.setEnabled(true);
+        // try to make marker to string
+        ed.putString("loc", marker.getPosition().toString());
+        ed.commit();
+        ed.putString("name",user.getText().toString());
+        ed.commit();
+        ed.putString("dck",dek.getText().toString());
+        ed.commit();
+        return false;
+    }
+
+    //private GoogleMap gMap;
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout, fragment);
+        fragmentTransaction.commit();
+    }
 
 }
