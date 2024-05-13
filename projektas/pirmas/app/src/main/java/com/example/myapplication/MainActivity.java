@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements  OnMapReadyCallback  {
 
@@ -45,16 +47,19 @@ public class MainActivity extends AppCompatActivity implements  OnMapReadyCallba
     Location currentLocation;
     //FusedLocationProviderClient fusedLocationProviderClient;
     //database stuff
-Connection connetion;
-String ConnectionRez="";
-
+private Connection connetion;
+private String name,str;
+ResultSet rss;
+ConnectioHelper connectioHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        sp = getSharedPreferences("Login", MODE_PRIVATE);//puts data
-
+        sp = getSharedPreferences("Login", MODE_PRIVATE);//puts
+        // mySql data base tried
+        //connectioHelper = new ConnectioHelper();
+       // Connect();
 
         ed = sp.edit();// init local data storing
 
@@ -78,42 +83,17 @@ String ConnectionRez="";
 
    //----------------------Map pin sttuff
     private ScrollView form;
-    public void GetTextFromSql(View view)
-    {
-        try {
-            ConnectioHelper connectioHelper = new ConnectioHelper();
-            connetion = connectioHelper.connection();
-            Log.i("HAHA","HAHAHA");
-            if (connetion!=null)
-            {
-                String query = "SELECT * From Markers " ;
-                Statement st = connetion.createStatement();
-                ResultSet rs = st.executeQuery(query);
 
-                while (rs.next())
-                {
-                    LatLng temp = new LatLng(rs.getDouble(5),rs.getDouble(6));
-                    entry oldR= new entry(rs.getString(1),rs.getString(2),rs.getDate(4),rs.getString(3),temp);
-                    Log.i("SQL GOOD",oldR.getname());
-                }
-
-
-            }
-
-        }catch (Exception ex)
-        {
-            Log.e("ERROR SQL", ex.getMessage());
-        }
-    }
     public void onSaveReviewClick(View view)
     {
+        EditText dek = findViewById(R.id.txtProblem);
         Button save= findViewById(R.id.btnSave);
 
-        GetTextFromSql(view);
+        //GetTextFromSql(view);
         SharedPreferences sharedPreferences = getSharedPreferences("Loc", MODE_PRIVATE);
         String markerData = sharedPreferences.getString("loc", null);
         String name=sharedPreferences.getString("name", null);
-        String dck=sharedPreferences.getString("dck", null);
+
 
 // uzpildo atsidariusi window
         if (markerData!=null) {
@@ -139,14 +119,16 @@ String ConnectionRez="";
 // Get the Date object from the Calendar instance
             Date date = calendar.getTime();
 
-            entry review = new entry(name, date,dck, temp);
+            entry review = new entry(name, date,dek.getText().toString(), temp);
             //close info window
             form=findViewById(R.id.layPin);
             form.setVisibility(View.INVISIBLE);
             form.setEnabled(false);
             ed.putBoolean("set",true);
             ed.commit();
-            // Change the button text
+            // saving stuff to db
+            ConnectioHelper mydb=new ConnectioHelper(this);
+            mydb.addMarker(name,"Kelio darbai",new java.sql.Date(date.getTime()),dek.getText().toString(),latitude,longitude);
 
         }
     }

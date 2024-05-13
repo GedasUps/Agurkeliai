@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -234,8 +235,7 @@ private ScrollView form;
        // marker.setTitle("Paliekame??");
         form.setEnabled(true);
         form.setVisibility(View.VISIBLE);
-        TextView user = getView().findViewById(R.id.txtUser);
-        EditText dek = getView().findViewById(R.id.txtProblem);
+        EditText user = getView().findViewById(R.id.txtUser);
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Login", MODE_PRIVATE);
         String userName = sharedPreferences.getString("name", null);
         user.setText(userName);
@@ -250,8 +250,8 @@ private ScrollView form;
         ed.commit();
         ed.putString("name",user.getText().toString());
         ed.commit();
-        ed.putString("dck",dek.getText().toString());
-        ed.commit();
+
+
         return false;
     }
 
