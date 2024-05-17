@@ -6,6 +6,7 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.SharedPreferences;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 
@@ -169,7 +170,6 @@ private ScrollView form;
                     gMap.addMarker(new MarkerOptions().position(latLng).title(location));
                     gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
                 }
-
                 return false;
             }
 
@@ -186,6 +186,9 @@ private ScrollView form;
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
         gMap = googleMap;
+        int id = mapSeachView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = mapSeachView.findViewById(id);
+        textView.setTextColor(Color.BLACK);
 
         // Initialize originLoc with a default location
         originLoc = new Location("");
