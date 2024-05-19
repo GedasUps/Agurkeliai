@@ -156,7 +156,7 @@ ConnectioHelper myDb;
         EditText name = findViewById(R.id.edtxtName);
         EditText email = findViewById(R.id.edtxtEmail);
         EditText number = findViewById(R.id.edtxtNumber);
-        EditText history = findViewById(R.id.edtxtHistory);
+       // EditText history = findViewById(R.id.edtxtHistory);
         if (uName != null) {
             name.setText(uName);
         }

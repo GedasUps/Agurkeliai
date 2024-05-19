@@ -5,6 +5,11 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.opengl.EGLExt;
 import android.os.Bundle;
@@ -14,7 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -24,6 +34,12 @@ import com.bumptech.glide.Glide;
 import com.example.myapplication.databinding.ActivityMainBinding;
 import com.example.myapplication.databinding.FragmentProfileBinding;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -42,9 +58,12 @@ public class ProfileFragment extends Fragment {
     private ActivityMainBinding viewModel;
     private FragmentProfileBinding binding; // Add this line
     private ActivityResultLauncher<Intent> imagePicLauncher;
+    private ConnectioHelper myDb;
+    private List<entry> entries;
     Uri selectedImageUri;
     ImageView profile ;
-
+    ScrollView history;
+    LatLng curr;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -74,7 +93,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        myDb = new ConnectioHelper(getActivity());
+        entries = new ArrayList<>();
         // Initialize ActivityResultLauncher for image picker
         imagePicLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -105,6 +125,7 @@ public class ProfileFragment extends Fragment {
         EditText number = binding.edtxtNumber;
         profile = binding.imgProfile;
         Button btnPic = binding.btnPhoto;
+        LoadMarkers();
 
         // Set user data
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Login", MODE_PRIVATE);
@@ -130,8 +151,77 @@ public class ProfileFragment extends Fragment {
         });
 
         return view;
+
+    }
+    private void LoadMarkers() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Loc", MODE_PRIVATE);
+        double lat = Double.parseDouble(sharedPreferences.getString("latitude", "0"));
+        double lng = Double.parseDouble(sharedPreferences.getString("longitude", "0"));
+        if (lat > 0 && lng > 0) {
+            curr = new LatLng(lat, lng);
+        } else {
+            curr = null;
+        }
+
+        LinearLayout linearLayout = binding.frHistory.findViewById(R.id.lLinear);
+        linearLayout.removeAllViews(); // Clear existing entries
+
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+getAllData();
+        for (entry en : entries) {
+
+            LatLng temp = new LatLng(en.getLoc().latitude, en.getLoc().longitude);
+            double distance = SphericalUtil.computeDistanceBetween(curr, temp);
+            if (distance <= 20000) { // only 20 km radius
+                View entryView = inflater.inflate(R.layout.entiry, linearLayout, false);
+                InternalMethods.setBorderBackground(entryView,  Color.WHITE, Color.BLACK, dpToPx(8), dpToPx(2) );
+                EditText txtName = entryView.findViewById(R.id.txtName);
+                EditText txtDate = entryView.findViewById(R.id.txtDate);
+                EditText txtText = entryView.findViewById(R.id.txtText);
+
+                // Set data for each entry
+                txtName.setText(en.getId());
+                txtDate.setText(en.getDate().toString());
+                txtText.setText(en.getText());
+
+                // Add the inflated entry layout to the LinearLayout
+                linearLayout.addView(entryView);
+
+            }
+        }
+    }
+    public static int dpToPx(float dp) {
+        float density = Resources.getSystem().getDisplayMetrics().density;
+        return Math.round(dp * density);
     }
 
+
+    private void getAllData() {
+        Cursor cursor = myDb.ReadAllData();
+        if (cursor.getCount() == 0) {
+            Toast.makeText(getActivity(), "noData", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                entry en = new entry();
+                en.setId(cursor.getString(1));
+                en.setname(cursor.getString(2));
+                String din = cursor.getString(3);
+                String pattern = "yyyy-MM-dd HH:mm:ss";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                Date date = null;
+                try {
+                    date = simpleDateFormat.parse(din);
+                } catch (Exception ex) {
+                    Toast.makeText(getActivity(), "we are parsing wrong data", Toast.LENGTH_SHORT).show();
+                }
+                en.setDate(date);
+                en.setText(cursor.getString(4));
+                LatLng loc = new LatLng(cursor.getDouble(5), cursor.getDouble(6));
+                en.setMarker(loc);
+                entries.add(en);
+            }
+        }
+    }
     // Method to save the selected profile picture URI to SharedPreferences
     private void saveProfilePictureUri(Uri uri) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Profile", MODE_PRIVATE);

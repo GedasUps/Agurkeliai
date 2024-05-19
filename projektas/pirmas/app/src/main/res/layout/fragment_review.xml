@@ -82,7 +82,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView"
+                        android:id="@+id/txtName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Jonas Jonaitis"
@@ -91,7 +91,7 @@
                         android:visibility="visible" />
 
                     <TextView
-                        android:id="@+id/date2"
+                        android:id="@+id/txtDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Kaunas, Lithuania, May 10, 2024, 08:55 PM"
@@ -99,7 +99,7 @@
                         android:visibility="visible" />
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/txtText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Patirtis su vieta buvo gera, bet galėjo būti ir geresnė, dar yra keletas trūkūmų, kurias reikia pašalinti."
