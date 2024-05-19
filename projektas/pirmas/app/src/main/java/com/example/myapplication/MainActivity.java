@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.icu.text.SimpleDateFormat;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,14 +26,12 @@ import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
+
 import org.threeten.bp.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements  OnMapReadyCallback  {
 
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements  OnMapReadyCallba
     SharedPreferences.Editor ed;//=sp.edit();
 
     String uName;
-    private List<entry> entries=new ArrayList<>();//Review list
+
     private final int FINE_PEMITON_CODE = 1;
     Location currentLocation;
     //FusedLocationProviderClient fusedLocationProviderClient;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements  OnMapReadyCallba
 private Connection connetion;
 private String name,str;
 ResultSet rss;
-ConnectioHelper connectioHelper;
+ConnectioHelper myDb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +59,8 @@ ConnectioHelper connectioHelper;
         setContentView(binding.getRoot());
         sp = getSharedPreferences("Login", MODE_PRIVATE);//puts
         // mySql data base tried
-        //connectioHelper = new ConnectioHelper();
+        myDb = new ConnectioHelper(MainActivity.this);
+
        // Connect();
 
         ed = sp.edit();// init local data storing
@@ -94,8 +96,7 @@ ConnectioHelper connectioHelper;
         String markerData = sharedPreferences.getString("loc", null);
         String name=sharedPreferences.getString("name", null);
 
-
-// uzpildo atsidariusi window
+        // uzpildo atsidariusi window
         if (markerData!=null) {
 
 
@@ -108,15 +109,15 @@ ConnectioHelper connectioHelper;
             LatLng temp = new LatLng(latitude, longitude);
 
 
-// Assuming your LocalDateTime object is named localDateTime
+        // Assuming your LocalDateTime object is named localDateTime
             LocalDateTime localDateTime = LocalDateTime.now();
 
-// Create a Calendar instance and set its fields using the LocalDateTime object
+        // Create a Calendar instance and set its fields using the LocalDateTime object
             Calendar calendar = Calendar.getInstance();
             calendar.set(localDateTime.getYear(), localDateTime.getMonthValue() - 1, localDateTime.getDayOfMonth(),
                     localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond());
 
-// Get the Date object from the Calendar instance
+        // Get the Date object from the Calendar instance
             Date date = calendar.getTime();
 
             entry review = new entry(name, date,dek.getText().toString(), temp);
@@ -124,14 +125,17 @@ ConnectioHelper connectioHelper;
             form=findViewById(R.id.layPin);
             form.setVisibility(View.INVISIBLE);
             form.setEnabled(false);
+            //comunicating whether pins is has to be set
             ed.putBoolean("set",true);
             ed.commit();
             // saving stuff to db
-            ConnectioHelper mydb=new ConnectioHelper(this);
-            mydb.addMarker(name,"Kelio darbai",new java.sql.Date(date.getTime()),dek.getText().toString(),latitude,longitude);
+            //ConnectioHelper mydb=new ConnectioHelper(this);
+            myDb.addMarker(name,"Kelio darbai",new java.sql.Date(date.getTime()),dek.getText().toString(),latitude,longitude);
 
         }
     }
+
+
     public void onCancelReviewClick(View view)
     {
         ed.putBoolean("set",false);

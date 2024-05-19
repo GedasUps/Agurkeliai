@@ -3,45 +3,63 @@ package com.example.myapplication;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.content.SharedPreferences;
-
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.icu.text.SimpleDateFormat;
 import android.location.Address;
 import android.location.Geocoder;
-
 import android.location.Location;
 import android.os.Bundle;
-import android.content.pm.PackageManager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.PixelCopy;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ScrollView;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import android.os.Bundle;
+import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-
-import android.widget.EditText;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
-import android.widget.SearchView;
-
-
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.*;//is it worth to import all library
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import androidx.annotation.Nullable;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MapFragment#newInstance} factory method to
@@ -49,41 +67,33 @@ import androidx.annotation.Nullable;
  */
 public class MapFragment extends Fragment implements  OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-private Location originLoc;
-    private Location originPos;
+    private static final int REQUEST_CODE = 101;
+    private static final int PERMISSION_REQUEST_CODE = 1001;
+
+    private String mParam1;
+    private String mParam2;
     private LatLng originDes;
     private Button navButton;
     private Marker destinationMarker;
+    private SharedPreferences sp;
+    private SharedPreferences sp1;
+    private SharedPreferences.Editor ed;
+    private SharedPreferences.Editor ed1;
+    private ConnectioHelper myDb;
+    private List<entry> entries;
+    private FusedLocationProviderClient fusedLocationClient;
+    private GoogleMap gMap;
+    private SearchView mapSearchView;
+    private ScrollView form;
+    private LatLng curr;
 
-    SharedPreferences sp;
-    SharedPreferences sp1;
-    SharedPreferences.Editor ed;//=sp.edit();
-    SharedPreferences.Editor ed1;//=sp.edit();
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-private ScrollView form;
     public MapFragment() {
         // Required empty public constructor
     }
-    // Define onSaveReviewClick method
 
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MapFragment newInstance(String param1, String param2) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
@@ -93,50 +103,66 @@ private ScrollView form;
         return fragment;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        // Initialize navButton
-        sp = getContext().getSharedPreferences("Loc", MODE_PRIVATE);//puts data
-        sp1 = getContext().getSharedPreferences("Login", MODE_PRIVATE);//puts data
-        ed = sp.edit();// init local data storing
-        ed1 = sp1.edit();// init local data storing
+        myDb = new ConnectioHelper(getActivity());
+        entries = new ArrayList<>();
+        getAllData();
 
+        sp = getContext().getSharedPreferences("Loc", MODE_PRIVATE);
+        sp1 = getContext().getSharedPreferences("Login", MODE_PRIVATE);
+        ed = sp.edit();
+        ed1 = sp1.edit();
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+    }
 
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+            return;
+        }
+        Task<Location> task = fusedLocationClient.getLastLocation();
 
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    ed.putString("latitude", String.valueOf(location.getLatitude()));
+                    ed.putString("longitude", String.valueOf(location.getLongitude()));
+                    ed.apply();
+                   // SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mpView);
+                   // if (supportMapFragment != null) {
+                      //  supportMapFragment.getMapAsync(MapFragment.this);
+                   // }
+                }
+            }
+        });
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         navButton = view.findViewById(R.id.btnNavigate);
-
-        form=view.findViewById(R.id.layPin);
+        form = view.findViewById(R.id.layPin);
         form.setVisibility(View.INVISIBLE);
         form.setEnabled(false);
+        mapSearchView = view.findViewById(R.id.mapSearch);
 
-
-        mapSeachView = view.findViewById(R.id.mapSearch);
-
-
-        // Set the click listener for the navigation button
         navButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Handle navigation button click event
             }
         });
-        // Get the SupportMapFragment and request the map asynchronously
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mpView);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
@@ -144,19 +170,19 @@ private ScrollView form;
 
         return view;
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Now you can set listeners or other interactions
-        mapSeachView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mapSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                String location = mapSeachView.getQuery().toString();
+                String location = mapSearchView.getQuery().toString();
                 List<Address> addressList = null;
 
                 if (location != null) {
-                    Geocoder geocoder = new Geocoder(getContext()); // Use context from the fragment
+                    Geocoder geocoder = new Geocoder(getContext());
                     try {
                         addressList = geocoder.getFromLocationName(location, 1);
                     } catch (IOException e) {
@@ -179,91 +205,128 @@ private ScrollView form;
             }
         });
     }
-    private static final int PERMISSION_REQUEST_CODE = 1001;
-    private GoogleMap gMap;
-    private SearchView mapSeachView;
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Loc", MODE_PRIVATE);
         gMap = googleMap;
-        int id = mapSeachView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-        TextView textView = mapSeachView.findViewById(id);
+        int id = mapSearchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = mapSearchView.findViewById(id);
         textView.setTextColor(Color.BLACK);
+        getLocation();
 
-        // Initialize originLoc with a default location
-        originLoc = new Location("");
-        originLoc.setLatitude(-34);
-        originLoc.setLongitude(151);
+        double lat = Double.parseDouble(sharedPreferences.getString("latitude", "0"));
+        double lng = Double.parseDouble(sharedPreferences.getString("longitude", "0"));
+        if (lat > 0 && lng > 0)
+            curr = new LatLng(lat, lng);
+        else
+            curr = null;
 
-        // Add any other map initialization code here
-        LatLng loc = new LatLng(-34, 151);
-     // gMap.addMarker(new MarkerOptions().position(loc).title("Kaunas"));
-     // gMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // If permissions are not granted, request them
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_CODE);
+        if (curr != null) {
+            for (entry en : entries) {
+                LatLng temp = new LatLng(en.getLoc().latitude, en.getLoc().longitude);
+                double distance = SphericalUtil.computeDistanceBetween(curr, temp);
+                if (distance <= 20000) // only 20 km radius
+                    gMap.addMarker(new MarkerOptions().position(en.getLoc()).title(en.getname()));
+            }
+        }
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_CODE);
         } else {
-            // Permissions are granted, enable location
             gMap.setMyLocationEnabled(true);
             gMap.setOnMapClickListener(this);
             gMap.setOnMarkerClickListener(this);
-
         }
-   }
+    }
 
-
-    //@SuppressLint("ResourceAsColor")
     @Override
     public void onMapClick(@NonNull LatLng point) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Login", MODE_PRIVATE);
         boolean ok = sharedPreferences.getBoolean("set", false);
 
-        // Check if destinationMarker is not null before removing it
-        if (destinationMarker != null&&ok==false) {
+        if (destinationMarker != null && !ok) {
             destinationMarker.remove();
         }
         if (ok) {
             ed1.putBoolean("set", false);
-            ed1.commit();
+            ed1.apply();
         }
         destinationMarker = gMap.addMarker(new MarkerOptions().position(point).title("Your choice").draggable(true));
         originDes = point;
-        originPos = originLoc;
         navButton.setBackgroundColor(getResources().getColor(R.color.blue));
         navButton.setEnabled(true);
     }
 
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
-       // marker.setTitle("Paliekame??");
         form.setEnabled(true);
         form.setVisibility(View.VISIBLE);
         EditText user = getView().findViewById(R.id.txtUser);
+        EditText problem = getView().findViewById(R.id.txtProblem);
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Login", MODE_PRIVATE);
         String userName = sharedPreferences.getString("name", null);
-        user.setText(userName);
+        boolean del = true;
 
-        // Find the LinearLayout directly using its ID
+        for (entry en : entries) {
+            if (en.getLoc().latitude == marker.getPosition().latitude && en.getLoc().longitude == marker.getPosition().longitude) {
+                user.setText(en.getId());
+                problem.setText(en.getText());
+                del = false;
+            } else {
+                user.setText(userName);
+            }
+            if (problem.getText().length() < 0)
+                del = true;
+            if (del) {
+                problem.setText("");
+            }
+        }
+
         ConstraintLayout clt = getView().findViewById(R.id.WndThis);
-        //LinearLayout sc  = getView().findViewById(R.id.WndThis);
         clt.setVisibility(View.VISIBLE);
         clt.setEnabled(true);
-        // try to make marker to string
-        ed.putString("loc", marker.getPosition().toString());
-        ed.commit();
-        ed.putString("name",user.getText().toString());
-        ed.commit();
 
+        ed.putString("loc", marker.getPosition().toString());
+        ed.apply();
+        ed.putString("name", user.getText().toString());
+        ed.apply();
 
         return false;
     }
 
-    //private GoogleMap gMap;
+    private void getAllData() {
+        Cursor cursor = myDb.ReadAllData();
+        if (cursor.getCount() == 0) {
+            Toast.makeText(getActivity(), "noData", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                entry en = new entry();
+                en.setId(cursor.getString(1));
+                en.setname(cursor.getString(2));
+                String din = cursor.getString(3);
+                String pattern = "yyyy-MM-dd HH:mm:ss";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                Date date = null;
+                try {
+                    date = simpleDateFormat.parse(din);
+                } catch (Exception ex) {
+                    Toast.makeText(getActivity(), "we are parsing wrong data", Toast.LENGTH_SHORT).show();
+                }
+                en.setDate(date);
+                en.setText(cursor.getString(4));
+                LatLng loc = new LatLng(cursor.getDouble(5), cursor.getDouble(6));
+                en.setMarker(loc);
+                entries.add(en);
+            }
+        }
+    }
+
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
-
 }

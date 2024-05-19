@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.icu.text.SimpleDateFormat;
@@ -81,7 +82,22 @@ public class ConnectioHelper extends SQLiteOpenHelper {
       {
           Toast.makeText(context,"inserted",Toast.LENGTH_SHORT).show();
       }
-
-
     }
+    //reads all data from ours db
+    Cursor ReadAllData()
+    {
+        String query  = "Select * from Entries";
+        //gets all data from db
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        // if db is not empty
+        if(db!=null )
+        {
+          cursor=  db.rawQuery(query,null);
+
+        }
+        return cursor;
+    }
+
 }
