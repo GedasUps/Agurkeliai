@@ -47,8 +47,8 @@ public class ConnectioHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "CREATE TABLE " + TABLE_NAME+" ("+COLUMN_ID+"INTEGER PRIMARY KEY AUTOINCREMENT, "+COLUMN_NAME+"TEXT, "
-                +COLUMN_TYPE+"TEXT, "+COLUMN_DATE+"DATE, "+COLUMN_DESCRIPION+"TEXT, "+COLUMN_LATITUDE+"DOUBLE, "
+        String query = "CREATE TABLE " + TABLE_NAME+" ("+COLUMN_ID+"INTEGER PRIMARY KEY AUTOINCREMENT, "+COLUMN_NAME+"CHAR, "
+                +COLUMN_TYPE+"CHAR, "+COLUMN_DATE+"DATE, "+COLUMN_DESCRIPION+"CAHR, "+COLUMN_LATITUDE+"DOUBLE, "
                 +COLUMN_LONGTITUDE+"DOUBLE);";
         db.execSQL(query);
     }
@@ -75,12 +75,12 @@ public class ConnectioHelper extends SQLiteOpenHelper {
       if(result==-1)
       {
           // failed to insert to db
-          Toast.makeText(context,"failed to insert",Toast.LENGTH_SHORT).show();// show message as android notification
+      //    Toast.makeText(context,"failed to insert",Toast.LENGTH_SHORT).show();// show message as android notification
 
       }
       else
       {
-          Toast.makeText(context,"inserted",Toast.LENGTH_SHORT).show();
+        //  Toast.makeText(context,"inserted",Toast.LENGTH_SHORT).show();
       }
     }
     //reads all data from ours db

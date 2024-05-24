@@ -199,7 +199,7 @@ getAllData();
     private void getAllData() {
         Cursor cursor = myDb.ReadAllData();
         if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "noData", Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getActivity(), "noData", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
                 entry en = new entry();
@@ -212,7 +212,7 @@ getAllData();
                 try {
                     date = simpleDateFormat.parse(din);
                 } catch (Exception ex) {
-                    Toast.makeText(getActivity(), "we are parsing wrong data", Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getActivity(), "we are parsing wrong data", Toast.LENGTH_SHORT).show();
                 }
                 en.setDate(date);
                 en.setText(cursor.getString(4));
