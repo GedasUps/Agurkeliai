@@ -167,7 +167,7 @@ public class ProfileFragment extends Fragment {
         linearLayout.removeAllViews(); // Clear existing entries
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-getAllData();
+        getAllData();
         sharedPreferences = requireActivity().getSharedPreferences("Login", MODE_PRIVATE);
         String name  = sharedPreferences.getString("name", "");
         for (entry en : entries) {

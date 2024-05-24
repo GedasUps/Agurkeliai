@@ -53,8 +53,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="330dp"
-        android:backgroundTint="#FFFFFF"
+        android:layout_height="349dp"
+        android:backgroundTint="#e1e1e1"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbarSize="4dp"
