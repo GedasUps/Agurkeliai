@@ -14,46 +14,11 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:text="Sukurti komentarą"
-        android:textSize="26dp" />
-
-    <EditText
-        android:id="@+id/editTextTextMultiLine"
-        android:layout_width="308dp"
-        android:layout_height="109dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="110dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        android:text="Komentaras" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="215dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:layout_marginBottom="15dp"
-        android:text="Išsiųsti komentarą" />
-
-    <EditText
-        android:id="@+id/editTextTextEmailAddress"
-        android:layout_width="305dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="195dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:text="El. paštas" />
-
     <ScrollView
+        android:id="@+id/reviewFrame"
         android:layout_width="match_parent"
-        android:layout_height="349dp"
+        android:layout_height="600dp"
+        android:layout_gravity="bottom"
         android:backgroundTint="#e1e1e1"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
@@ -62,6 +27,7 @@
         android:scrollbars="vertical">
 
         <LinearLayout
+            android:id="@+id/reviewLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#EAEAEA"
@@ -192,5 +158,15 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:text="Recent reviews"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
 </FrameLayout>
