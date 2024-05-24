@@ -8,12 +8,12 @@
     android:background="#FFFFFF"
     android:padding="6dp">
 
-    <EditText
+    <TextView
         android:id="@+id/txtName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="320dp"
         android:minHeight="20dp"
         android:text="Name"
@@ -25,7 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <TextView
         android:id="@+id/txtDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtName" />
 
-    <EditText
+    <TextView
         android:id="@+id/txtText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

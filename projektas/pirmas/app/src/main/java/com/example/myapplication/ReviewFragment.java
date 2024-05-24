@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
+import com.example.myapplication.databinding.FragmentReviewBinding;
+
+import java.util.List;
 // TODO: make reviews actually functional!
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +28,8 @@ public class ReviewFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private ActivityMainBinding viewModel;
+    private ConnectioHelper myDb;
+    private List<entry> entries;
 
     // TODO: Rename and change types of parameters
     private String mParam1;

@@ -177,9 +177,9 @@ public class ProfileFragment extends Fragment {
             if (en.getId().equals(name)) { // only for the same user will show his entiries
                 View entryView = inflater.inflate(R.layout.entiry, linearLayout, false);
                 InternalMethods.setBorderBackground(entryView,  Color.WHITE, Color.BLACK, dpToPx(8), dpToPx(2) );
-                EditText txtName = entryView.findViewById(R.id.txtName);
-                EditText txtDate = entryView.findViewById(R.id.txtDate);
-                EditText txtText = entryView.findViewById(R.id.txtText);
+                TextView txtName = entryView.findViewById(R.id.txtName);
+                TextView txtDate = entryView.findViewById(R.id.txtDate);
+                TextView txtText = entryView.findViewById(R.id.txtText);
 
                 // Set data for each entry
                 txtName.setText(en.getId());
