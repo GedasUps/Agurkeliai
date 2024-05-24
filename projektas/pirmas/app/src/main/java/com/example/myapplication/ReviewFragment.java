@@ -1,5 +1,10 @@
 package com.example.myapplication;
 
+import static com.example.myapplication.ProfileFragment.dpToPx;
+
+import android.database.Cursor;
+import android.graphics.Color;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,10 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
 import com.example.myapplication.databinding.FragmentReviewBinding;
+import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 // TODO: make reviews actually functional!
 /**
@@ -28,6 +38,7 @@ public class ReviewFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private ActivityMainBinding viewModel;
+    private FragmentReviewBinding binding;
     private ConnectioHelper myDb;
     private List<entry> entries;
 
@@ -60,6 +71,8 @@ public class ReviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myDb = new ConnectioHelper(getActivity());
+        entries = new ArrayList<>();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -73,7 +86,10 @@ public class ReviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_review, container, false);
+        binding = FragmentReviewBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        LoadReviews();
+        return view;
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -83,7 +99,61 @@ public class ReviewFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
-    private void loadReviews() {
+    private void LoadReviews() {
+        LinearLayout linearLayout = binding.reviewFrame.findViewById(R.id.reviewLayout);
+        linearLayout.removeAllViews(); // Clear existing entries
 
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        getAllData();
+        for (entry en : entries) {
+            long reviewDate = en.getDate().getTime(); // duoda komentaro laiką (ms)
+            long currentTime = System.currentTimeMillis(); // duoda dabarties laiką (ms)
+            //  LatLng temp = new LatLng(en.getLoc().latitude, en.getLoc().longitude);
+            //double distance = SphericalUtil.computeDistanceBetween(curr, temp);
+            if (currentTime - reviewDate < 86400000) { // only for the same user will show his entiries
+                View entryView = inflater.inflate(R.layout.entiry, linearLayout, false);
+                InternalMethods.setBorderBackground(entryView,  Color.WHITE, Color.BLACK, dpToPx(8), dpToPx(2) );
+                TextView txtName = entryView.findViewById(R.id.txtName);
+                TextView txtDate = entryView.findViewById(R.id.txtDate);
+                TextView txtText = entryView.findViewById(R.id.txtText);
+
+                // Set data for each entry
+                txtName.setText(en.getId());
+                txtDate.setText(en.getDate().toString());
+                txtText.setText(en.getText());
+
+                // Add the inflated entry layout to the LinearLayout
+                linearLayout.addView(entryView);
+
+            }
+        }
+    }
+
+    private void getAllData() {
+        Cursor cursor = myDb.ReadAllData();
+
+        if (cursor.getCount() == 0) {
+            //  Toast.makeText(getActivity(), "noData", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                entry en = new entry();
+                en.setId(cursor.getString(1));
+                en.setname(cursor.getString(2));
+                String din = cursor.getString(3);
+                String pattern = "yyyy-MM-dd HH:mm:ss";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                Date date = null;
+                try {
+                    date = simpleDateFormat.parse(din);
+                } catch (Exception ex) {
+                    //   Toast.makeText(getActivity(), "we are parsing wrong data", Toast.LENGTH_SHORT).show();
+                }
+                en.setDate(date);
+                en.setText(cursor.getString(4));
+                LatLng loc = new LatLng(cursor.getDouble(5), cursor.getDouble(6));
+                en.setMarker(loc);
+                entries.add(en);
+            }
+        }
     }
 }
