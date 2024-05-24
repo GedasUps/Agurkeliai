@@ -168,11 +168,13 @@ public class ProfileFragment extends Fragment {
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
 getAllData();
+        sharedPreferences = requireActivity().getSharedPreferences("Login", MODE_PRIVATE);
+        String name  = sharedPreferences.getString("name", "");
         for (entry en : entries) {
 
-            LatLng temp = new LatLng(en.getLoc().latitude, en.getLoc().longitude);
-            double distance = SphericalUtil.computeDistanceBetween(curr, temp);
-            if (distance <= 20000) { // only 20 km radius
+          //  LatLng temp = new LatLng(en.getLoc().latitude, en.getLoc().longitude);
+            //double distance = SphericalUtil.computeDistanceBetween(curr, temp);
+            if (en.getId().equals(name)) { // only for the same user will show his entiries
                 View entryView = inflater.inflate(R.layout.entiry, linearLayout, false);
                 InternalMethods.setBorderBackground(entryView,  Color.WHITE, Color.BLACK, dpToPx(8), dpToPx(2) );
                 EditText txtName = entryView.findViewById(R.id.txtName);
@@ -198,6 +200,7 @@ getAllData();
 
     private void getAllData() {
         Cursor cursor = myDb.ReadAllData();
+
         if (cursor.getCount() == 0) {
           //  Toast.makeText(getActivity(), "noData", Toast.LENGTH_SHORT).show();
         } else {
