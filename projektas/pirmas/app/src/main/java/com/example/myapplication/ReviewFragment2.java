@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+// TODO: turn hardcoded review example into actual review!!!
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ReviewFragment2#newInstance} factory method to

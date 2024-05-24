@@ -102,7 +102,7 @@
     <ScrollView
         android:id="@+id/frHistory"
         android:layout_width="match_parent"
-        android:layout_height="430dp"
+        android:layout_height="380dp"
         android:backgroundTint="@color/LightGray"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
@@ -111,22 +111,17 @@
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnChangeContacts">
+        app:layout_constraintTop_toBottomOf="@+id/btnChangeContacts"
+        app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
             android:id="@+id/lLinear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/LightGray"
-            android:orientation="vertical" >
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Button" />
-        </LinearLayout>
+            android:orientation="vertical" />
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
