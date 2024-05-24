@@ -57,6 +57,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -225,8 +226,10 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback, Google
         if (curr != null) {
             for (entry en : entries) {
                 LatLng temp = new LatLng(en.getLoc().latitude, en.getLoc().longitude);
+                long reviewDate = en.getDate().getTime(); // duoda komentaro laiką (ms)
+                long currentTime = System.currentTimeMillis(); // duoda dabarties laiką (ms)
                 double distance = SphericalUtil.computeDistanceBetween(curr, temp);
-                if (distance <= 20000) // only 20 km radius
+                if (distance <= 20000 && (currentTime - reviewDate < 86400000)) // only 20 km radius and less than 86400 seconds ago
                     gMap.addMarker(new MarkerOptions().position(en.getLoc()).title(en.getname()));
             }
         }
