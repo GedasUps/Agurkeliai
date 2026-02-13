@@ -1,6 +1,1 @@
-# Agurkeliai
-asas
-aassa
-
-Labas
-PAKEISTAS_____
+About the app, read the wiki page
